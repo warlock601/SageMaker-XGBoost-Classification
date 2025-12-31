@@ -23,3 +23,9 @@ Let say we have data of customers of a bank, so we don't want to train the machi
 
 ### EC2 Instance Recommendation for the PCA Algorithm
 PCA supports CPU and GPU instances for training and inference. Which instance type is most performant depends heavily on the specifics of the input data. For GPU instances, PCA supports P2, P3, G4dn, and G5.
+
+
+### Hyperparameters in PCA
+<img width="1062" height="551" alt="image" src="https://github.com/user-attachments/assets/95cf3ad0-7e15-42d2-aaa8-f9e1b4c78d89" />
+<img width="1061" height="332" alt="image" src="https://github.com/user-attachments/assets/046023b8-8e04-4f9b-b862-d05d772a2660" />
+
