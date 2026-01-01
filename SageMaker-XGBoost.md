@@ -57,3 +57,28 @@ Recall is also called True Positive rate or sensitivity. Important metric when w
 <img width="725" height="373" alt="image" src="https://github.com/user-attachments/assets/34c1b136-6eed-4e84-8c64-f567f83d6ff7" />
 
 Basically the motive of above 2 snaps is to understand that sometimes Precision matters more and sometimes Recall, depending upon the use-case.
+
+
+### F1 Score
+- F1 Score is an overall measure of a model's accuracy that combines precision and recall. F1 score is the harmonic mean of precision and recall.
+- What is the difference between F1 Score and Accuracy? </br>
+In unbalanced datasets, if we have large number of true negatives (healthy patients), accuracy could be misleading. Therefore, F1 score might be a better KPI
+to use since it provides a balance between recall and precision in the presence of unbalanced datasets. 
+
+𝐹1 𝑆𝑐𝑜𝑟𝑒 =(2 ∗(𝑃𝑅𝐸𝐶𝐼𝑆𝐼𝑂𝑁 ∗𝑅𝐸𝐶𝐴𝐿𝐿))/((𝑃𝑅𝐸𝐶𝐼𝑆𝐼𝑂𝑁+𝑅𝐸𝐶𝐴𝐿𝐿))
+
+𝐹1 𝑆𝑐𝑜𝑟𝑒 =(2 ∗𝑇𝑃)/(2∗𝑇𝑃+𝐹𝑃+𝐹𝑁)
+
+<img width="472" height="137" alt="image" src="https://github.com/user-attachments/assets/9b67aa46-0102-4a81-8d7b-7960622a4e5b" />
+
+
+### ROC CURVE
+- ROC Curve is a metric that assesses the model ability to distinguish between binary (0 or 1) classes. 
+- The ROC curve is created by plotting the true positive rate (TPR) against the false positive rate (FPR) at various threshold settings. 
+- The true-positive rate is also known as sensitivity, recall or probability of detection in machine learning. 
+- The false-positive rate is also known as the probability of false alarm and can be calculated as (1 − specificity). 
+- Points above the diagonal line represent good classification (better than random)
+- The model performance improves if it becomes skewed towards the upper left corner. 
+<img width="352" height="360" alt="image" src="https://github.com/user-attachments/assets/ac51a2d6-68c6-49ac-961d-449530cb0498" />
+
+
