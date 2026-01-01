@@ -82,3 +82,11 @@ to use since it provides a balance between recall and precision in the presence 
 <img width="352" height="360" alt="image" src="https://github.com/user-attachments/assets/ac51a2d6-68c6-49ac-961d-449530cb0498" />
 
 
+### AUC (Area Under Curve)
+- The light blue area represents the area Under the Curve of the Receiver Operating Characteristic (AUROC). 
+- The diagonal dashed red line represents the ROC curve of a random predictor with AUROC of 0.5. 
+- If ROC AUC = 1, perfect classifier
+- Predictor #1 is better than predictor #2
+- Higher the AUC, the better the model is at predicting 0s as 0s and 1s as 1s. 
+<img width="377" height="237" alt="image" src="https://github.com/user-attachments/assets/1f08fe5b-2690-47da-8e15-c85091179c42" />
+
