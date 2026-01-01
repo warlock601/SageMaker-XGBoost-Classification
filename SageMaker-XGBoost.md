@@ -1,9 +1,9 @@
-<img width="2112" height="126" alt="image" src="https://github.com/user-attachments/assets/fb2b36ab-de0a-4201-ba88-307a4777f142" /># SageMaker XGBoost
+# SageMaker XGBoost
 - XGBoost or Extreme Gradient Boosting algorithm is one of the most famous and powerful algorithms to perform both regression and classification tasks. 
 - XGBoost is a supervised learning algorithm and implements gradient boosted trees algorithm. 
 - The algorithm work by combining an ensemble of predictions from several weak models.
 
-<img width="1040" height="370" alt="image" src="https://github.com/user-attachments/assets/439f1d8d-a1b6-44c2-8bf3-1a05c1cbde52" />
+<img width="640" height="270" alt="image" src="https://github.com/user-attachments/assets/439f1d8d-a1b6-44c2-8bf3-1a05c1cbde52" /> </br>
 Combining a majority vote out of all different trees will generate a more robust prediction compared to only using one single tree. 
 
 ### Why does Xgboost work really well? 
@@ -30,7 +30,7 @@ Boosting aims to reduce bias and convert weak learners into a single strong lear
 Initially, all data points have equal weight, but misclassified points are given higher weight in subsequent iterations.
 
 
-Accuracy is generally misleading and is not enough to assess the performance of a classifier. That is why we look at other metrics such as Precision and Recall.
+Accuracy is generally misleading and is not enough to assess the performance of a classifier. That is why we look at other metrics such as Precision and Recall. Especially if the dataset is unbalanced.
 
 ### PRECISION
 Precision is an important metric when False positives are important (how many times a model says a pedestrian was detected and there was nothing there!
@@ -38,3 +38,22 @@ Precision is an important metric when False positives are important (how many ti
 𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛 =(𝑇𝑅𝑈𝐸 𝑃𝑂𝑆𝐼𝑇𝐼𝑉𝐸𝑆)/(𝑇𝑂𝑇𝐴𝐿 𝑇𝑅𝑈𝐸 𝑃𝑅𝐸𝐷𝐼𝐶𝑇𝐼𝑂𝑁𝑆)
 
 𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛 =(𝑇𝑅𝑈𝐸 𝑃𝑂𝑆𝐼𝑇𝐼𝑉𝐸𝑆)/(𝑇𝑅𝑈𝐸 𝑃𝑂𝑆𝐼𝑇𝐼𝑉𝐸𝑆+𝐹𝐴𝐿𝑆𝐸 𝑃𝑂𝑆𝐼𝑇𝐼𝑉𝐸𝑆)
+
+
+### RECALL
+Recall is also called True Positive rate or sensitivity. Important metric when we care about false negatives.
+
+𝑅𝑒𝑐𝑎𝑙𝑙 =(𝑇𝑅𝑈𝐸 𝑃𝑂𝑆𝐼𝑇𝐼𝑉𝐸𝑆)/(𝐴𝐶𝑇𝑈𝐴𝐿 𝑇𝑅𝑈𝐸 )
+
+𝑅𝑒𝑐𝑎𝑙𝑙 =(𝑇𝑅𝑈𝐸 𝑃𝑂𝑆𝐼𝑇𝐼𝑉𝐸𝑆)/(𝑇𝑅𝑈𝐸 𝑃𝑂𝑆𝐼𝑇𝐼𝑉𝐸𝑆+𝐹𝐴𝐿𝑆𝐸 𝑁𝐸𝐺𝐴𝑇𝐼𝑉𝐸𝑆)
+
+#### Consider this Bank Fraud Detection Confusion Matrix:
+
+<img width="725" height="373" alt="image" src="https://github.com/user-attachments/assets/86b680f4-a66d-4a98-bfb3-9e032bb3ab69" />
+
+
+#### Consider the case of Spam Email Detection:
+
+<img width="725" height="373" alt="image" src="https://github.com/user-attachments/assets/34c1b136-6eed-4e84-8c64-f567f83d6ff7" />
+
+Basically the motive of above 2 snaps is to understand that sometimes Precision matters more and sometimes Recall, depending upon the use-case.
