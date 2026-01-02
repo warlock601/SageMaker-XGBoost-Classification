@@ -36,11 +36,14 @@ import matplotlib.pyplot as plt
 # read the csv file 
 cardio_df = pd.read_csv("cardio_train.csv", sep=";")
 
-# to print out the data
+# to print out the starting data
 cardio_df.head()
+
+# similarly we can also print the last 4-5 rows by using tail()
+cardio_df.tail()
 ```
 
-- Perform Exploratory data analysis.
+- Perform Exploratory data analysis. cardio_df.isnull().sum() will give us non-zero numbers if we have any NULL elements. info() provides the total number of columns, not-null count for all the columns, data-type etc. 
 ```bash
 # Drop id
 cardio_df = cardio_df.drop(columns = 'id')
@@ -61,3 +64,26 @@ cardio_df.describe()
 
 
 ```
+
+- Let say we want to obtain the features of the individuals who are older than 64.8 years old.
+```bash
+age_greater_64 = cardio_df[cardio_df['age'>64.8]]
+```
+
+
+- Visualize Dataset.
+  </br>
+  Let say we want to plot the Histogram for all features (use 20 bins). Plot the correlation matrix and indicate if there exists any correlations between features.
+  ```bash
+  cardio_df.hist(bins=20, figsize=(15, 12))
+
+  sns.pairplot(cardio_df)
+
+  corr_matrix = cardio_df.corr()
+
+  # Correlation matrix is best represented by a Heatmap-type representation
+  sns.heatmap(corr_matrix, annot = True)
+
+  ```
+
+   
