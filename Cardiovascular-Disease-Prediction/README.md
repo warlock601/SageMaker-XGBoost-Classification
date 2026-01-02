@@ -162,4 +162,36 @@ cm = confusion_matrix(y_train, predict_train)
 plt.figure()
 sns.heatmap(cm, annot=True)
 ```
+Here we can see that the model is doing not that great. In the Confusion matrix there are a lot of False Positives and False Negatives.
 <img width="453" height="277" alt="image" src="https://github.com/user-attachments/assets/a0566bfa-d02c-4a76-b697-65d2785a4742" />
+
+- Then we print the metrics for training and testing dataset. These things will be imported: precision_score, recall_score, accuracy_score.
+```bash
+# print metrics for training dataset
+
+from sklearn.metrics import precision_score, recall_score, accuracy_score
+
+print("Precision = {}".format(precision_score(y_train, predict_train)))
+print("Recall = {}".format(recall_score(y_train, predict_train)))
+print("Accuracy = {}".format(accuracy_score(y_train, predict_train)))
+```
+```bash
+# print metrics for testing dataset
+
+print("Precision = {}".format(precision_score(y_test, predict)))
+print("Recall = {}".format(recall_score(y_test, predict)))
+print("Accuracy = {}".format(accuracy_score(y_test, predict)))
+```
+
+- Generate the Confusion Matrix for testing data.
+```bash
+# plot the confusion matrix
+
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, predict)
+plt.figure()
+sns.heatmap(cm, annot=True)
+```
+<img width="453" height="277" alt="image" src="https://github.com/user-attachments/assets/df8967d8-cd19-41d3-928d-05e5cd360354" />
+
+We can play with this by increasing or decreasing the number of n_estimators ans max_depth.
