@@ -86,6 +86,34 @@ age_greater_64 = cardio_df[cardio_df['age'>64.8]]
 
   ```
 
+- Create Training and Testing dataset.
+```bash
+# split the dataframe into target and features
+
+df_target = cardio_df['cardio']
+df_final = cardio_df.drop(columns =['cardio'])
+
+cardio_df.columns
+
+df_final.shape
+
+df_target.shape
+
+```
+
+```bash
+#spliting the data in to test and train sets
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(df_final, df_target, test_size = 0.2)
+
+# then we can check the shape of training and test dataset 
+X_train.shape
+y_train.shape
+X_test.shape
+X_test.shape
+```
+
 
 - Train & Test XG-Boost model in local mode (SageMaker built-in algorithms are not used here). We're not gonna use PCA algo in SageMaker here, instead we'll build quick short classifier by leveraging XG-Boost. And also       we'll learn how to do HyperParameter Optmization. On the instance itself we will install XG-Boost and use it in local mode.
 ```bash
@@ -123,7 +151,7 @@ predict = model.predict(X_test)
 predict
 ```
 
-</br>
+
 - Now we want to plot the confusion matrix for the training data and for the testing data. Also we want to plot the different scores for Training as well as for Testing separately. 
 
 ```bash
@@ -134,3 +162,4 @@ cm = confusion_matrix(y_train, predict_train)
 plt.figure()
 sns.heatmap(cm, annot=True)
 ```
+<img width="453" height="277" alt="image" src="https://github.com/user-attachments/assets/a0566bfa-d02c-4a76-b697-65d2785a4742" />
