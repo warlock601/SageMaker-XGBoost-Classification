@@ -90,3 +90,19 @@ to use since it provides a balance between recall and precision in the presence 
 - Higher the AUC, the better the model is at predicting 0s as 0s and 1s as 1s. 
 <img width="377" height="237" alt="image" src="https://github.com/user-attachments/assets/1f08fe5b-2690-47da-8e15-c85091179c42" />
 
+
+### UNDERFITTING MODEL
+- Model is under fitting if it’s too simple that it cannot reflect the complexity of the training dataset.
+- We can overcome under fitting by:
+  - Increasing the complexity of the model.
+  - Training the model for a longer period of time (more epochs) to reduce error.
+<img width="418" height="240" alt="image" src="https://github.com/user-attachments/assets/0f615758-64db-49c4-a3c3-009d25bf2191" />
+
+
+### OVERFITTING MODEL
+- Model is overfitting data when it memorizes all the specific details of the training data and fails to generalize. 
+- Overfitting models tend to perform very well on the training dataset but poorly on any new dataset (testing dataset).
+- Machine learning is the art of creating models that are able to generalize and avoid memorization.
+<img width="402" height="293" alt="image" src="https://github.com/user-attachments/assets/c0c0bd92-dc83-4fc6-abff-f2429fc100d7" />
+
+
