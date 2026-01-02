@@ -86,4 +86,51 @@ age_greater_64 = cardio_df[cardio_df['age'>64.8]]
 
   ```
 
-   
+
+- Train & Test XG-Boost model in local mode (SageMaker built-in algorithms are not used here). We're not gonna use PCA algo in SageMaker here, instead we'll build quick short classifier by leveraging XG-Boost. And also       we'll learn how to do HyperParameter Optmization. On the instance itself we will install XG-Boost and use it in local mode.
+```bash
+# install xgboost
+
+!pip install xgboost
+```
+
+We're using the default values of XGBClassifier(). We can change learning_rate, n_estimators etc.
+```bash
+# use xgboost model in local mode
+
+# note that we have not performed any normalization or scaling since XGBoost is not sensitive to this.
+# XGboost is a type of ensemble algorithms and works by selecting thresholds or cut points on features to split a node. 
+# It doesn't really matter if the features are scaled or not.
+
+
+from xgboost import XGBClassifier
+
+# model = XGBClassifier(learning_rate=0.01, n_estimators=100, objective='binary:logistic')
+model = XGBClassifier()
+
+model.fit(X_train, y_train)
+```
+<img width="492" height="782" alt="image" src="https://github.com/user-attachments/assets/c8779232-dc63-4087-85ca-bdfc09d6a436" />
+
+Here the classifier is trained with Base Score 0.5, max_depth of the tree is 6.
+<img width="1117" height="175" alt="image" src="https://github.com/user-attachments/assets/f89afa92-c0a5-4b3a-ad6c-509e5613fb3c" />
+
+```bash
+# make predictions on test data
+
+predict = model.predict(X_test)
+
+predict
+```
+
+</br>
+- Now we want to plot the confusion matrix for the training data and for the testing data. Also we want to plot the different scores for Training as well as for Testing separately. 
+
+```bash
+# Assess trained model performance on training dataset
+predict_train = model.predict(X_train)
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_train, predict_train)
+plt.figure()
+sns.heatmap(cm, annot=True)
+```
