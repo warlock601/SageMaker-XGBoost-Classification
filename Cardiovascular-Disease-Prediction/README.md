@@ -194,4 +194,8 @@ sns.heatmap(cm, annot=True)
 ```
 <img width="453" height="277" alt="image" src="https://github.com/user-attachments/assets/df8967d8-cd19-41d3-928d-05e5cd360354" />
 
-We can play with this by increasing or decreasing the number of n_estimators ans max_depth.
+We can play with this by increasing or decreasing the number of n_estimators ans max_depth. </br>
+- n_estimators: This hyperparameter Determines the number of decision trees in the ensemble model. Each tree learns from the residuals of the previous ones. A higher number of estimators generally improves
+  performance up to a point, but can also lead to overfitting and increased training time if too high.
+- max_depth: This parameter limits how deep each individual decision tree can grow. A deeper tree can model more complex relationships in the data, but it also increases the risk of overfitting the training data.            Conversely, a shallow tree might underfit the data. The optimal value typically lies between 3 and 10 and is found through cross-validation or hyperparameter tuning
+
