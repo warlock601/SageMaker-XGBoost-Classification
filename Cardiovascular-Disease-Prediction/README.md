@@ -19,7 +19,45 @@ Presence or absence of cardiovascular disease | Target Variable | cardio | binar
 
 ```
 Note that:
+  Objective: factual information; </br>
+  Examination: results of medical examination; </br>
+  Subjective: information given by the patient. </br>
 
-  - Objective: factual information;
-  - Examination: results of medical examination;
-  - Subjective: information given by the patient.
+
+
+- Import LIBRARIES & DATASETS
+```bash
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+# read the csv file 
+cardio_df = pd.read_csv("cardio_train.csv", sep=";")
+
+# to print out the data
+cardio_df.head()
+```
+
+- Perform Exploratory data analysis.
+```bash
+# Drop id
+cardio_df = cardio_df.drop(columns = 'id')
+
+# since the age is given in days, we convert it into years
+cardio_df['age'] = cardio_df['age']/365
+
+cardio_df.head()
+
+# checking the null values
+cardio_df.isnull().sum()
+
+# Checking the dataframe information
+cardio_df.info()
+
+# Statistical summary of the dataframe
+cardio_df.describe()
+
+
+```
