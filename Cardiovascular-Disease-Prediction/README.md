@@ -256,4 +256,186 @@ buf.seek(0)
 # Let's reset that back to zero
 ```
 We don't have any targets here, like there are no predictions that we're trying to do. All we're trying to do is to take the inputs and perform an unsupervised learning strategy to reduce the number of features and generate componenets for us. So there is no output here. We're gonna use the outputs later on, when we train the XGBoost algorithm on the reduced componenets. 
-  
+
+Then we create a key (which will be name of the file). Then we upload the data in record-io format to S3 bucket. 
+```bash
+import os
+
+# Code to upload RecordIO data to S3
+ 
+# Key refers to the name of the file 
+ 
+key = 'pca'
+
+#following code uploads the data in record-io format to S3 bucket to be accessed later for training
+boto3.resource('s3').Bucket(bucket).Object(os.path.join(prefix, 'train', key)).upload_fileobj(buf)
+
+# Let's print out the training data location in s3
+s3_train_data = 's3://{}/{}/train/{}'.format(bucket, prefix, key)
+
+
+print('uploaded training data location: {}'.format(s3_train_data))
+```
+<img width="1676" height="422" alt="image" src="https://github.com/user-attachments/assets/b8cd89f4-e9c4-41b8-b7a2-70770a98529a" />
+
+
+```bash
+# create output placeholder in S3 bucket to store the PCA output
+
+output_location = 's3://{}/{}/output'.format(bucket, prefix)
+print('training artifacts will be uploaded to: {}'.format(output_location))
+```
+
+Now we need to obtain a reference to PCA container image exactly the same as we have done before.
+```bash
+# This code is used to get the training container of sagemaker built-in algorithms
+# all we have to do is to specify the name of the algorithm, that we want to use
+
+# Let's obtain a reference to the pca container image
+# Note that all  models are named estimators
+# You don't have to specify (hardcode) the region, get_image_uri will get the current region name using boto3.Session
+
+
+from sagemaker.amazon.amazon_estimator import get_image_uri
+
+
+container = get_image_uri(boto3.Session().region_name, 'pca')
+```
+
+Then we specify the role, instance_count, instance_type for training and set the hyperparameters. In this code, we mentioned feature_dim=11 and num_componenets=6, this means we reduced 11 features into 6 Principal Components. 
+```bash
+# We have passed in the container, the type of instance that we would like to use for training 
+# output path and sagemaker session into the Estimator. 
+# We can also specify how many instances we would like to use for training
+
+
+pca = sagemaker.estimator.Estimator(container,
+                                       role, 
+                                       train_instance_count=1, 
+                                       train_instance_type='ml.m5.xlarge',
+                                       output_path=output_location,
+                                       sagemaker_session=sagemaker_session)
+
+# We can tune parameters like the number of features that we are passing in, mode of algorithm, mini batch size and number of pca components
+
+
+pca.set_hyperparameters(feature_dim=11,
+                        num_components=6,
+                        subtract_mean=False,
+                        algorithm_mode='regular',
+                        mini_batch_size=100)
+
+
+# Pass in the training data from S3 to train the pca model
+
+
+pca.fit({'train': s3_train_data})
+
+# Let's see the progress using cloudwatch logs
+```
+We'll get an output like this:
+```bash
+#metrics {"StartTime": 1767441876.7668202, "EndTime": 1767441876.7673469, "Dimensions": {"Algorithm": "PCA", "Host": "algo-1", "Operation": "training"}, "Metrics": {"setuptime": {"sum": 20.956039428710938, "count": 1, "min": 20.956039428710938, "max": 20.956039428710938}, "totaltime": {"sum": 1176.9766807556152, "count": 1, "min": 1176.9766807556152, "max": 1176.9766807556152}}}
+
+2026-01-03 12:04:51 Uploading - Uploading generated training model
+2026-01-03 12:04:51 Completed - Training job completed
+Training seconds: 115
+Billable seconds: 115
+```
+
+
+- Deploy the trained PCA model.
+```bash
+# Deploy the model to perform inference 
+
+pca_reduction = pca.deploy(initial_instance_count = 1,
+                                          instance_type = 'ml.m5.xlarge')
+```
+Deploying an Endpoint takes a bit of time and we'll get this "!" at the end.
+<img width="612" height="82" alt="image" src="https://github.com/user-attachments/assets/87b3fa5e-2744-41f4-89f2-2e6e84745b0b" />
+
+Then we'll override the data that will be sending to the model. Basically the deployed model predict the data to be text/csv format. 
+```bash
+# Content type overrides the data that will be passed to the deployed model, since the deployed model expects data in text/csv format.
+
+# Serializer accepts a single argument, the input data, and returns a sequence of bytes in the specified content type
+
+# Deserializer accepts two arguments, the result data and the response content type, and return a sequence of bytes in the specified content type.
+
+# Reference: https://sagemaker.readthedocs.io/en/stable/predictors.html
+
+
+# pca_reduction.content_type = 'text/csv'
+from sagemaker.serializers import CSVSerializer
+from sagemaker.deserializers import JSONDeserializer
+
+pca_reduction.serializer = CSVSerializer()
+pca_reduction.deserializer = JSONDeserializer()
+```
+
+Then we take the results and extract predictions out of it.
+```bash
+# make prediction on the test data
+
+result = pca_reduction.predict(np.array(df_final))
+
+result # results are in Json format
+```
+
+To Iterate through the results.
+```bash
+# Since the results are in Json format, we access the scores by iterating through the scores in the predictions
+predictions = np.array([r['projection'] for r in result['projections']])
+
+predictions
+
+predictions.shape
+```
+
+To delete the endpoint.
+```bash
+# Delete the end-point
+
+pca_reduction.delete_endpoint()
+```
+
+
+
+- Train & Evaluate XGBoost model on data after dimensionality reduction.
+```bash
+# Convert the array into dataframe in a way that target variable is set as the first column and is followed by feature columns
+# This is because sagemaker built-in algorithm expects the data in this format
+
+train_data = pd.DataFrame({'Target':df_target})
+train_data
+
+for i in range(predictions.shape[1]):
+    train_data[i] = predictions[:,i]
+
+train_data.head()
+```
+
+Divide the data into Training and Testing set.
+```bash
+train_data_size = int(0.9 * train_data.shape[0])
+train_data_size
+
+# shuffle the data in dataframe and then split the dataframe into train, test and validation sets.
+
+import sklearn 
+
+train_data = sklearn.utils.shuffle(train_data)
+train, test, valid = train_data[:train_data_size], train_data[train_data_size:train_data_size + 3500], train_data[train_data_size + 3500:]
+
+train.shape, test.shape,valid.shape
+
+X_test, y_test = test.drop(columns = ['Target']), test['Target']
+
+
+# save train_data and validation_data as csv files
+
+train.to_csv('train.csv',header = False, index = False)
+valid.to_csv('valid.csv',header = False, index = False)
+```
+
+
