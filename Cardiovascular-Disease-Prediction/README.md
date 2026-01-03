@@ -212,3 +212,48 @@ model = XGBClassifier(learning_rate = 0.01, n_estimators = 500, max_depth = 20)
 model.fit(X_train, y_train)
 
 ```
+
+
+
+- Perform Dimensionality Reduction using PCA (SageMaker buildt-in Alogrithm)
+```bash
+# Boto3 is the Amazon Web Services (AWS) Software Development Kit (SDK) for Python
+# Boto3 allows Python developer to write software that makes use of services like Amazon S3 and Amazon EC2
+
+
+
+import sagemaker
+import boto3
+from sagemaker import Session
+
+# Let's create a Sagemaker session
+sagemaker_session = sagemaker.Session()
+bucket = Session().default_bucket() 
+prefix = 'pca'  # prefix is the subfolder within the bucket.
+
+#Let's get the execution role for the notebook instance. 
+# This is the IAM role that you created when you created your notebook instance. You pass the role to the training job.
+# Note that AWS Identity and Access Management (IAM) role that Amazon SageMaker can assume to perform tasks on your behalf (for example, reading training results, called model artifacts, from the S3 bucket and writing training results to Amazon S3). 
+
+role = sagemaker.get_execution_role()
+```
+
+Then we convert the Numpy array into RecordIO format. "smac" is sagemaker common library in SageMaker which is primarily a collection of preconfigured Python libraries and tools designed to streamline and automate common, labor-intensive machine learning (ML) workflows. Use cases: Model building & training, hyperparameter tuning & optimization, data prep etc. smac can also be used to do data conversion, here we're using it for that only.
+```bash
+import io # The io module allows for dealing with various types of I/O (text I/O, binary I/O and raw I/O). 
+import numpy as np
+import sagemaker.amazon.common as smac # sagemaker common libary
+
+# Code below converts the data in numpy array format to RecordIO format
+# This is the format required by Sagemaker PCA
+
+buf = io.BytesIO() # create an in-memory byte array (buf is a buffer I will be writing to)
+df_matrix = df_final.to_numpy() # convert the dataframe into 2-dimensional array
+smac.write_numpy_to_dense_tensor(buf, df_matrix)
+buf.seek(0)
+
+# When you write to in-memory byte arrays, it increments 1 every time you write to it
+# Let's reset that back to zero
+```
+We don't have any targets here, like there are no predictions that we're trying to do. All we're trying to do is to take the inputs and perform an unsupervised learning strategy to reduce the number of features and generate componenets for us. So there is no output here. We're gonna use the outputs later on, when we train the XGBoost algorithm on the reduced componenets. 
+  
